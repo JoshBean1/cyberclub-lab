@@ -25,5 +25,8 @@ if ($ipMap.ContainsKey($hostname)) {
     $adapter = Get-NetAdapter | Where-Object { $_.Status -eq "Up" } | Select-Object -First 1
     New-NetIPAddress -InterfaceAlias $adapter.Name -IPAddress $ip -PrefixLength 24 -DefaultGateway $gateway
     Set-DnsClientServerAddress -InterfaceAlias $adapter.Name -ServerAddresses $dns
+
+    # Promote to DC
+    Install-ADDSForest -DomainName "cyberclub.local" -SafeModeAdministratorPassword (ConvertTo-SecureString "ActiveDirectorySucks!123" -AsPlainText -Force) -Force
     Unregister-ScheduledTask -TaskName "StartupConfig" -Confirm:$false
 }
